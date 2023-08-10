@@ -42,6 +42,7 @@ powercfg -change -monitor-timeout-dc 0
 
 
 # Install Applications
+# Winget installation may be slow or freeze. If so, consider installing applications manually.
 cd D:\TCA_Workstation_Runup\Apps
 start .\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
 Start-Sleep -Seconds 90
