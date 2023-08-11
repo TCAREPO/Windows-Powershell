@@ -74,7 +74,6 @@ $UninstallPackages = @(
     "AD2F1837.HPQuickDrop"
     "AD2F1837.HPWorkWell"
     "AD2F1837.myHP"
-    "AD2F1837.HPDesktopSupportUtilities"
     "AD2F1837.HPQuickTouch"
     "AD2F1837.HPEasyClean"
     "AD2F1837.HPSystemInformation"
@@ -180,3 +179,8 @@ Catch {
 #           n{exit}
 #     default{write-warning "Skipping reboot."}
 # }
+
+
+# Uninstall HP Support Assistant
+$UninstallPrograms = @(
+    "AD2F1837.HPDesktopSupportUtilities"
