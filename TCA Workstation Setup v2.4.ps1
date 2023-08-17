@@ -53,6 +53,10 @@ winget install -e --id VideoLAN.VLC --accept-source-agreements --silent
 #winget install --id Microsoft.Office --accept-source-agreements --silent
 start KcsSetup.exe
 
+# Possible winget install command
+# If this command works, use this instead of the installer on the runup USB.
+# Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe
+
 
 
 #   Remove HP bloatware / crapware
