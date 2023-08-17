@@ -41,8 +41,11 @@ powercfg -change -standby-timeout-dc 0
 powercfg -change -monitor-timeout-dc 0
 
 
+
+
 # Install Applications
 # Don't install office via winget. It will install the 64-bit version. We want the 32-bit.
+
 cd D:\TCA_Workstation_Runup\Apps
 start .\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
 Start-Sleep -Seconds 90
@@ -56,6 +59,12 @@ start KcsSetup.exe
 # Possible winget install command
 # If this command works, use this instead of the installer on the runup USB.
 # Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe
+
+# Possible command to install multiple applications at once
+# cd D:\TCA_Workstation_Runup\Apps
+# Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe; start KcsSetup.exe
+# winget install -e --id Google.Chrome --silent --accept-source-agreements; winget install --id Adobe.Acrobat.Reader.64-bit --exact --accept-source-agreements --accept-package-agreements --silent; winget install -e --id 7zip.7zip --accept-source-agreements --silent; winget install -e --id VideoLAN.VLC --accept-source-agreements --silent
+
 
 
 
