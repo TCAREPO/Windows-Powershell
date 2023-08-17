@@ -42,6 +42,7 @@ powercfg -change -monitor-timeout-dc 0
 
 
 # Install Applications
+# Don't install office via winget. It will install the 64-bit version. We want the 32-bit.
 cd D:\TCA_Workstation_Runup\Apps
 start .\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
 Start-Sleep -Seconds 90
