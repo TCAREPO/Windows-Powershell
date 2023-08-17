@@ -86,6 +86,9 @@ setup.exe /configure "365enterprise.xml"
 #choco install hpsupportassistant
 #choco upgrade hpsupportassistant
 
+# HP Support Assistant Uninstall Command
+$UninstallPackages = @( 
+    "AD2F1837.HPDesktopSupportUtilities"
 
 
 
@@ -111,7 +114,6 @@ $UninstallPackages = @(
     "AD2F1837.HPQuickDrop"
     "AD2F1837.HPWorkWell"
     "AD2F1837.myHP"
-    "AD2F1837.HPDesktopSupportUtilities"
     "AD2F1837.HPQuickTouch"
     "AD2F1837.HPEasyClean"
     "AD2F1837.HPSystemInformation"
