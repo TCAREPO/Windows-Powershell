@@ -43,8 +43,15 @@ powercfg -change -monitor-timeout-dc 0
 
 
 
+
+
+
+
+
+
 # Install Applications
-# Don't install office via winget. It will install the 64-bit version. We want the 32-bit.
+# These commands point to your USB directory, which will typically be D drive. If the machine has multiple drives, your USB may no longer be labeled as D drive, and the relevent commands will fail.
+# To fix this, simply change the drive letter to the correct one prior to running the commands.
 
 cd D:\TCA_Workstation_Runup\Apps
 start .\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
@@ -53,17 +60,30 @@ winget install -e --id Google.Chrome --silent --accept-source-agreements
 winget install --id Adobe.Acrobat.Reader.64-bit --exact --accept-source-agreements --accept-package-agreements --silent
 winget install -e --id 7zip.7zip --accept-source-agreements --silent
 winget install -e --id VideoLAN.VLC --accept-source-agreements --silent
-#winget install --id Microsoft.Office --accept-source-agreements --silent
 start KcsSetup.exe
 
 # Possible winget install command
 # If this command works, use this instead of the installer on the runup USB.
-# Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe
+Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe
 
 # Possible command to install multiple applications at once
-# cd D:\TCA_Workstation_Runup\Apps
-# Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe; start KcsSetup.exe
-# winget install -e --id Google.Chrome --silent --accept-source-agreements; winget install --id Adobe.Acrobat.Reader.64-bit --exact --accept-source-agreements --accept-package-agreements --silent; winget install -e --id 7zip.7zip --accept-source-agreements --silent; winget install -e --id VideoLAN.VLC --accept-source-agreements --silent
+cd D:\TCA_Workstation_Runup\Apps
+Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe; start KcsSetup.exe
+winget install -e --id Google.Chrome --silent --accept-source-agreements; winget install --id Adobe.Acrobat.Reader.64-bit --exact --accept-source-agreements --accept-package-agreements --silent; winget install -e --id 7zip.7zip --accept-source-agreements --silent; winget install -e --id VideoLAN.VLC --accept-source-agreements --silent
+
+# Don't install office via winget. 32-bit is currently unsupported via winget, and the 64-bit version which is preinstalled on HP machines needs to be uninstalled before 32-bit can be installed.
+# A work around is to run a preconfigured installer from the USB.
+# Put the files from ITGlue (https://tca.au.itglue.com/2448273808656493/documents/folder/3303640252483645/) into the same directory as your agent on your USB.
+# Run the following command to uninstall the pre-installed 64-bit version of office.
+setup.exe /configure "uninstall.xml"
+# Run one of the following commands, depending on which version of office the client uses.
+setup.exe /configure "365business.xml"
+setup.exe /configure "365enterprise.xml"
+
+
+
+
+
 
 
 
