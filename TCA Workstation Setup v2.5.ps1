@@ -71,7 +71,7 @@ cd D:\TCA_Workstation_Runup\Apps
 Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe; start KcsSetup.exe
 winget install -e --id Google.Chrome --silent --accept-source-agreements; winget install --id Adobe.Acrobat.Reader.64-bit --exact --accept-source-agreements --accept-package-agreements --silent; winget install -e --id 7zip.7zip --accept-source-agreements --silent; winget install -e --id VideoLAN.VLC --accept-source-agreements --silent
 
-# Don't install office via winget. 32-bit is currently unsupported via winget, and the 64-bit version which is preinstalled on HP machines needs to be uninstalled before 32-bit can be installed.
+# Don't install office via winget. 32-bit is currently unsupported via winget, and the 64-bit version which is preinstalled on HP machines needs to be uninstalled before the 32-bit can be installed.
 # A work around is to run a preconfigured installer from the USB.
 # Put the files from ITGlue (https://tca.au.itglue.com/2448273808656493/documents/folder/3303640252483645/) into the same directory as your agent on your USB.
 # Run the following command to uninstall the pre-installed 64-bit version of office.
@@ -80,7 +80,11 @@ setup.exe /configure "uninstall.xml"
 setup.exe /configure "365business.xml"
 setup.exe /configure "365enterprise.xml"
 
-
+# Possible chocolatey HP Support assistant install command. Automatically updates to the latest version.
+#winget install chocolatey
+#choco uninstall hpsupportassistant
+#choco install hpsupportassistant
+#choco upgrade hpsupportassistant
 
 
 
