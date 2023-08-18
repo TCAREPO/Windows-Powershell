@@ -8,8 +8,8 @@
 #Start-Process -FilePath $file -ArgumentList '/quietinstall /skipeula /auto upgrade /copylogs $dir'
 
 # Run windows 10 Updates installed Powershell Module
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Force
-Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
+#Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Force
+#Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
 #Install-Module -Name PSWindowsUpdate -Force -Scope AllUsers
 #Get-WindowsUpdate -install -AcceptAll
 
@@ -77,8 +77,8 @@ winget install -e --id Google.Chrome --silent --accept-source-agreements; winget
 # Run the following command to uninstall the pre-installed 64-bit version of office.
 setup.exe /configure "uninstall.xml"
 # Run one of the following commands, depending on which version of office the client uses.
-setup.exe /configure "365business.xml"
-setup.exe /configure "365enterprise.xml"
+#setup.exe /configure "365business.xml"
+#setup.exe /configure "365enterprise.xml"
 
 # Possible chocolatey HP Support assistant install command. Automatically updates to the latest version.
 #winget install chocolatey
