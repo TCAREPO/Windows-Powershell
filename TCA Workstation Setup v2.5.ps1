@@ -69,7 +69,7 @@ Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller
 # Possible command to install multiple applications at once
 cd D:\TCA_Workstation_Runup\Apps
 Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe; start KcsSetup.exe
-winget install -e --id Google.Chrome --silent --accept-source-agreements; winget install --id Adobe.Acrobat.Reader.64-bit --exact --accept-source-agreements --accept-package-agreements --silent; winget install -e --id 7zip.7zip --accept-source-agreements --silent; winget install -e --id VideoLAN.VLC --accept-source-agreements --silent
+winget install -e --id Google.Chrome --silent --accept-source-agreements; winget install --id Adobe.Acrobat.Reader.64-bit --exact --accept-source-agreements --accept-package-agreements --silent; winget install -e --id 7zip.7zip --accept-source-agreements --silent; winget install -e --id VideoLAN.VLC --accept-source-agreements --silent; setup.exe /configure "uninstall.xml"
 
 # Don't install office via winget. 32-bit is currently unsupported via winget, and the 64-bit version which is preinstalled on HP machines needs to be uninstalled before the 32-bit can be installed.
 # A work around is to run a preconfigured installer from the USB.
