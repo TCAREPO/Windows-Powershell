@@ -60,7 +60,7 @@ winget install -e --id Google.Chrome --silent --accept-source-agreements
 winget install --id Adobe.Acrobat.Reader.64-bit --exact --accept-source-agreements --accept-package-agreements --silent
 winget install -e --id 7zip.7zip --accept-source-agreements --silent
 winget install -e --id VideoLAN.VLC --accept-source-agreements --silent
-winget install -e --id TeamViewer.TeamViewer --accept-source-agreements --silent
+winget install --id TeamViewer.TeamViewer --accept-source-agreements --silent
 start KcsSetup.exe
 
 # Possible winget install command
