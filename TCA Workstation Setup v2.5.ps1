@@ -82,14 +82,16 @@ setup.exe /configure "uninstall.xml"
 #setup.exe /configure "365enterprise.xml"
 
 # Possible chocolatey HP Support assistant install command. Automatically updates to the latest version.
-#winget install chocolatey
+winget install chocolatey
+#choco feature enable -n -allowglobalconfirmation
 #choco uninstall hpsupportassistant
-#choco install hpsupportassistant
+#choco install hpsupportassistant 
 #choco upgrade hpsupportassistant
+# uninstall won't work, have to uninstall via the script below.
+# choco command doesn't work in powershell ise, only CMD.
 
-# HP Support Assistant Uninstall Command
-$UninstallPackages = @( 
-    "AD2F1837.HPDesktopSupportUtilities"
+# To Uninstall chocolatey, use the command below
+#winget uninstall chocolatey
 
 
 
