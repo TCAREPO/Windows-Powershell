@@ -94,6 +94,13 @@ winget install chocolatey
 #winget uninstall chocolatey
 
 
+# To Uninstall Windows PC Health Check via powershell
+$application = get-wmiobject -class win32_product -filter "name = 'windows pc health check'"
+$application.uninstall()
+#To view installed applications
+#get-wmiobject -class win32_product
+
+
 
 
 
