@@ -99,9 +99,14 @@ $application = get-wmiobject -class win32_product -filter "name = 'windows pc he
 $application.uninstall()
 #To view installed applications
 #get-wmiobject -class win32_product
+#This command could be used to uninstall any remaining HP bloatware after the bloatware removal portion of the script has been run.
 
-
-
+# To remove the edge search bar in the desktop, view the following regedit below
+# Open Registry Editor (start-run-regedit)
+# - Go to Computer\HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\
+# - Create a new key "Edge"
+# - Inside Edge, create a D-WORD "WebWidgetAllowed" and put set its value data to 0"
+# I will change this into a powershell script.
 
 
 
