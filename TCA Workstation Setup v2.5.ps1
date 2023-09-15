@@ -8,8 +8,8 @@
 #Start-Process -FilePath $file -ArgumentList '/quietinstall /skipeula /auto upgrade /copylogs $dir'
 
 # Run windows 10 Updates installed Powershell Module
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Force
-Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
+#Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Force
+#Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
 #Install-Module -Name PSWindowsUpdate -Force -Scope AllUsers
 #Get-WindowsUpdate -install -AcceptAll
 
@@ -41,8 +41,18 @@ powercfg -change -standby-timeout-dc 0
 powercfg -change -monitor-timeout-dc 0
 
 
+
+
+
+
+
+
+
+
 # Install Applications
-# Winget installation may be slow or freeze. If so, consider installing applications manually.
+# These commands point to your USB directory, which will typically be D drive. If the machine has multiple drives, your USB may no longer be labeled as D drive, and the relevent commands will fail.
+# To fix this, simply change the drive letter to the correct one prior to running the commands.
+
 cd D:\TCA_Workstation_Runup\Apps
 start .\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
 Start-Sleep -Seconds 90
@@ -50,8 +60,53 @@ winget install -e --id Google.Chrome --silent --accept-source-agreements
 winget install --id Adobe.Acrobat.Reader.64-bit --exact --accept-source-agreements --accept-package-agreements --silent
 winget install -e --id 7zip.7zip --accept-source-agreements --silent
 winget install -e --id VideoLAN.VLC --accept-source-agreements --silent
-#winget install --id Microsoft.Office --accept-source-agreements --silent
+winget install --id TeamViewer.TeamViewer --accept-source-agreements --silent
 start KcsSetup.exe
+
+# Possible winget install command
+# If this command works, use this instead of the installer on the runup USB.
+Add-AppxPackage https://github.com/microsoft/winget-cli/releases/latest/download/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
+
+# Possible command to install multiple applications at once
+cd D:\TCA_Workstation_Runup\Apps
+Add-AppxPackage https://github.com/microsoft/winget-cli/releases/latest/download/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle; start KcsSetup.exe
+winget install -e --id Google.Chrome --silent --accept-source-agreements; winget install --id Adobe.Acrobat.Reader.64-bit --exact --accept-source-agreements --accept-package-agreements --silent; winget install --id TeamViewer.TeamViewer --accept-source-agreements --silent; winget install -e --id 7zip.7zip --accept-source-agreements --silent; winget install -e --id VideoLAN.VLC --accept-source-agreements --silent; setup.exe /configure "uninstall.xml"
+
+# Don't install office via winget. 32-bit is currently unsupported via winget, and the 64-bit version which is preinstalled on HP machines needs to be uninstalled before the 32-bit can be installed.
+# A work around is to run a preconfigured installer from the USB.
+# Put the files from ITGlue (https://tca.au.itglue.com/2448273808656493/documents/folder/3303640252483645/) into the same directory as your agent on your USB.
+# Run the following command to uninstall the pre-installed 64-bit version of office.
+setup.exe /configure "uninstall.xml"
+# Run one of the following commands, depending on which version of office the client uses.
+#setup.exe /configure "365business.xml"
+#setup.exe /configure "365enterprise.xml"
+
+# Possible chocolatey HP Support assistant install command. Automatically updates to the latest version.
+winget install chocolatey
+#choco feature enable -n -allowglobalconfirmation
+#choco uninstall hpsupportassistant
+#choco install hpsupportassistant 
+#choco upgrade hpsupportassistant
+# uninstall won't work, have to uninstall via the script below.
+# choco command doesn't work in powershell ise, only CMD.
+
+# To Uninstall chocolatey, use the command below
+#winget uninstall chocolatey
+
+
+# To Uninstall Windows PC Health Check via powershell
+$application = get-wmiobject -class win32_product -filter "name = 'windows pc health check'"
+$application.uninstall()
+#To view installed applications
+#get-wmiobject -class win32_product
+#This command could be used to uninstall any remaining HP bloatware after the bloatware removal portion of the script has been run.
+
+# To remove the edge search bar in the desktop, view the following regedit below
+# Open Registry Editor (start-run-regedit)
+# - Go to Computer\HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\
+# - Create a new key "Edge"
+# - Inside Edge, create a D-WORD "WebWidgetAllowed" and put set its value data to 0"
+# I will change this into a powershell script.
 
 
 
@@ -179,8 +234,3 @@ Catch {
 #           n{exit}
 #     default{write-warning "Skipping reboot."}
 # }
-
-
-# Uninstall HP Support Assistant
-$UninstallPrograms = @(
-    "AD2F1837.HPDesktopSupportUtilities"
