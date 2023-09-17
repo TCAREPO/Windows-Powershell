@@ -5,7 +5,16 @@
 $RunUpDrive = ((Get-Disk | Where-Object -FilterScript {$_.Bustype -Eq "USB"}) | Get-Partition).DriveLetter # Finds the USB drive and captures drive letter within $RunUpDrive
 $AppsPath = "$RunUpDrive\TCA_Workstation_Runup\Apps" # Creates a string for the default apps file path
 
+[CmdletBinding()]
+param (
+    [Parameter()]
+    [switch]
+    $Stage1
+)
 
+
+
+if($Stage1){
 
 # Power + windows settings
 # Turn Off UAC (User Access Control -Restart Required)
@@ -27,14 +36,12 @@ powercfg -change -monitor-timeout-ac 0
 powercfg -change -standby-timeout-ac 0
 powercfg -change -standby-timeout-dc 0
 powercfg -change -monitor-timeout-dc 0
-
-
-
+}
 
 
 
 #Install applications
-
+if($Stage2){
 # These commands point to your USB directory, which will typically be D drive.
 Set-Location -Path $AppsPath
 Start-Process .\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
@@ -45,7 +52,7 @@ winget install -e --id 7zip.7zip --accept-source-agreements --silent
 winget install -e --id VideoLAN.VLC --accept-source-agreements --silent
 winget install -e --id TeamViewer.TeamViewer --accept-source-agreements --silent
 Start-Process KcsSetup.exe
-
+}
 
 
 
