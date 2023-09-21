@@ -118,7 +118,37 @@ $application.uninstall()
 # I will change this into a powershell script.
 
 
+# INSTALL HP DRIVERS
+#download HPCMSL
+#This module will give you commands to download/install HP updates, instead of having to go through HP Support Assistant.
+Install-PackageProvider -Name NuGet -Force #make sure Package NuGet is up to date 
+Install-Module -Name PowerShellGet  -Force #install the latest version of PowerSHellGet module
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Bypass -Force;
+import-module powershellget
+set-psrepository -name "psgallery" -installationpolicy trusted 
+Install-Module -Name HPCMSL -acceptlicense
 
+#Download HP softpaqs
+#Without setting the peramaters, this will download all compatible softpaqs.
+#This has what appears to be bugs. For example, it downloaded an nvidia driver package despite the machine not having a GPU
+#paramaters exist to select softpaqs by catagory and/or releasetype.
+#possible catagories we can exclude: software - security
+#the friendlyname parameter makes the file names more readable but may not be consistant.
+#downloaded files will have to be installed using seperate commands. The exception to this is get-hpbioswindowsupdate 
+#which allows you to download AND install the updated bios with the -flash parameter.
+#If softpaq numbers are consistant, these can be easily executed via powershell.
+#some files can be able to be install silently in cmd with the /s parameter
+#sp 136093, 142308, 142677, 
+get-softpaqlist -friendlyname -downloaddirectory c:\softpaqs -download 
+
+#install latest bios
+get-hpbioswindowsupdate -severity latest -flash -yes
+#If the latest is already installed and this prevents the script from continuing, use the following line instead:
+#get-hpbioswindowsupdate -severity latest -flash -yes -force
+
+
+
+# REMOVE HP BLOATWARE
 #   Remove HP bloatware / crapware
 #  
 # -- source : https://gist.github.com/mark05e/a79221b4245962a477a49eb281d97388
