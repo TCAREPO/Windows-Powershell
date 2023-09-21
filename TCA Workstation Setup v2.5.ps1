@@ -13,6 +13,15 @@
 #Install-Module -Name PSWindowsUpdate -Force -Scope AllUsers
 #Get-WindowsUpdate -install -AcceptAll
 
+#Install Windows 11 from 10, silently.
+$dir = 'C:\_Windows_FU\packages'
+mkdir $dir
+$webClient = New-Object System.Net.WebClient
+$url = 'https://go.microsoft.com/fwlink/?linkid=2171764'
+$file = "$($dir)\Win11Upgrade.exe"
+$webClient.DownloadFile($url,$file)
+Start-Process -FilePath $file -ArgumentList '/quietinstall /skipeula /auto upgrade /copylogs $dir'
+
 # Join computer to domain (Restart) examples
 #Add-Computer -DomainName paperboys.local -Credential paperboys\tcaadmin -Force -Restart
 #Add-Computer -DomainName sawtellrsl -Credential sawtellrsl\tcaadmin -Force -Restart
