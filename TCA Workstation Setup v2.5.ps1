@@ -140,6 +140,9 @@ Install-Module -Name HPCMSL -acceptlicense
 #some files can be able to be install silently in cmd with the /s parameter
 #sp 136093, 142308, 142677, 
 get-softpaqlist -friendlyname -downloaddirectory c:\softpaqs -download 
+#To prevent downloading some of the unneccesary drivers, like the nvidia driver package mentioned above, you can use the following parameters
+# -category driver -releasetype critical, recommended
+
 
 #install latest bios
 get-hpbioswindowsupdate -severity latest -flash -yes
