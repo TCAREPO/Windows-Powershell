@@ -21,6 +21,7 @@ $url = 'https://go.microsoft.com/fwlink/?linkid=2171764'
 $file = "$($dir)\Win11Upgrade.exe"
 $webClient.DownloadFile($url,$file)
 Start-Process -FilePath $file -ArgumentList '/quietinstall /skipeula /auto upgrade /copylogs $dir'
+# this often fails, but in future most of the machines we run up will come with Windows 11 Pre-installed.
 
 # Join computer to domain (Restart) examples
 #Add-Computer -DomainName paperboys.local -Credential paperboys\tcaadmin -Force -Restart
@@ -144,6 +145,8 @@ get-softpaqlist -friendlyname -downloaddirectory c:\softpaqs -download
 #To prevent downloading some of the unneccesary drivers, like the nvidia driver package mentioned above, you can use the following parameters
 # -category driver -releasetype critical, recommended
 # EG: get-softpaqlist -category driver -releasetype critical, recommended -friendlyname -downloaddirectory c:\softpaqs -download 
+# Use the following paramater to only download drivers which will automatically detect if a newer driver is already installed
+# -Characteristic SSM 
 
 
 #install latest bios
