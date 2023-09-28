@@ -142,6 +142,7 @@ Install-Module -Name HPCMSL -acceptlicense
 get-softpaqlist -friendlyname -downloaddirectory c:\softpaqs -download 
 #To prevent downloading some of the unneccesary drivers, like the nvidia driver package mentioned above, you can use the following parameters
 # -category driver -releasetype critical, recommended
+# EG: get-softpaqlist -category driver -releasetype critical, recommended -friendlyname -downloaddirectory c:\softpaqs -download 
 
 
 #install latest bios
