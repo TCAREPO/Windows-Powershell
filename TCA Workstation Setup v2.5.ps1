@@ -13,83 +13,103 @@
 #Install-Module -Name PSWindowsUpdate -Force -Scope AllUsers
 #Get-WindowsUpdate -install -AcceptAll
 
+
 #Install Windows 11 from 10, silently.
-$dir = 'C:\_Windows_FU\packages'
-mkdir $dir
-$webClient = New-Object System.Net.WebClient
-$url = 'https://go.microsoft.com/fwlink/?linkid=2171764'
-$file = "$($dir)\Win11Upgrade.exe"
-$webClient.DownloadFile($url,$file)
-Start-Process -FilePath $file -ArgumentList '/quietinstall /skipeula /auto upgrade /copylogs $dir'
+#$dir = 'C:\_Windows_FU\packages'
+#mkdir $dir
+#$webClient = New-Object System.Net.WebClient
+#$url = 'https://go.microsoft.com/fwlink/?linkid=2171764'
+#$file = "$($dir)\Win11Upgrade.exe"
+#$webClient.DownloadFile($url,$file)
+#Start-Process -FilePath $file -ArgumentList '/quietinstall /skipeula /auto upgrade /copylogs $dir'
 # this often fails, but in future most of the machines we run up will come with Windows 11 Pre-installed.
 
-# Join computer to domain (Restart) examples
+
+
+### Rename Machine
+
+
+### Update Windows
+Install-Module -name PSWindowsupdate
+Get-WindowsUpdate
+Install-WindowsUpdate -acceptall -IgnoreReboot
+
+
+### Join computer to domain (Restart) examples
 #Add-Computer -DomainName paperboys.local -Credential paperboys\tcaadmin -Force -Restart
 #Add-Computer -DomainName sawtellrsl -Credential sawtellrsl\tcaadmin -Force -Restart
 
-# Turn Off UAC (User Access Control -Restart Required)
+
+### Turn Off UAC (User Access Control -Restart Required)
 New-ItemProperty -Path HKLM:Software\Microsoft\Windows\CurrentVersion\policies\system -Name EnableLUA -PropertyType DWord -Value 0 -Force
 
-# Run HP Support Assistant - Update support Assistant
-# Update HP Software and drivers
 
-# Turn on Windows feature .Net3.5
+### Turn on Windows feature .Net3.5
 enable-windowsoptionalfeature -Online -Featurename netfx3
 
-# turn on Windows feature Telnet client
+
+### turn on Windows feature Telnet client
 enable-windowsoptionalfeature -Online -Featurename telnetclient
 
-# Set power option to Full Power
+
+### Set power option to Full Power
 powercfg /list
 powercfg /setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
 powercfg /query
 
-# Turn off screen saver and Lock screen (Power and Sleep, screen turn off never)
+
+### Turn off screen saver and Lock screen (Power and Sleep, screen turn off never)
 powercfg -change -monitor-timeout-ac 0
 powercfg -change -standby-timeout-ac 0
 powercfg -change -standby-timeout-dc 0
 powercfg -change -monitor-timeout-dc 0
 
 
+### Install Agent
+start KcsSetup.exe
 
 
+### Install Winget package
+Add-AppxPackage https://github.com/microsoft/winget-cli/releases/latest/download/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
 
 
-
-
-
-
-# Install Applications
-# These commands point to your USB directory, which will typically be D drive. If the machine has multiple drives, your USB may no longer be labeled as D drive, and the relevent commands will fail.
-# To fix this, simply change the drive letter to the correct one prior to running the commands.
-
-cd D:\TCA_Workstation_Runup\Apps
-start .\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
-Start-Sleep -Seconds 90
+### Install Applications via winget (Must be done one at a time)
 winget install -e --id Google.Chrome --silent --accept-source-agreements
 winget install --id Adobe.Acrobat.Reader.64-bit --exact --accept-source-agreements --accept-package-agreements --silent
 winget install -e --id 7zip.7zip --accept-source-agreements --silent
 winget install -e --id VideoLAN.VLC --accept-source-agreements --silent
 winget install --id TeamViewer.TeamViewer --accept-source-agreements --silent
-start KcsSetup.exe
 
-# Possible winget install command
-# If this command works, use this instead of the installer on the runup USB.
-Add-AppxPackage https://github.com/microsoft/winget-cli/releases/latest/download/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
 
-# Possible command to install multiple applications at once
-cd D:\TCA_Workstation_Runup\Apps
-Add-AppxPackage https://github.com/microsoft/winget-cli/releases/latest/download/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle; start KcsSetup.exe
-winget install -e --id Google.Chrome --silent --accept-source-agreements; winget install --id Adobe.Acrobat.Reader.64-bit --exact --accept-source-agreements --accept-package-agreements --silent; winget install --id TeamViewer.TeamViewer --accept-source-agreements --silent; winget install -e --id 7zip.7zip --accept-source-agreements --silent; winget install -e --id VideoLAN.VLC --accept-source-agreements --silent; setup.exe /configure "uninstall.xml"
+### Reinstall Office 365 (Business by default, but can easily change to Enterprise via the commands below)
+set-location d:
+copy-Item -path D:\tca_workstation_runup\apps\setup.exe -Destination c:\ODT; copy-Item –Path D:\tca_workstation_runup\apps\365uninstall.xml -Destination c:\ODT; copy-Item –Path D:\tca_workstation_runup\apps\365business.xml -Destination c:\ODT; copy-Item –Path D:\tca_workstation_runup\apps\365enterprise.xml -Destination c:\ODT
+cmd /c c:\odt\setup.exe /configure "C:\odt\365uninstall.xml"
+cmd /c c:\odt\setup.exe /configure "c:\odt\365business.xml"
+# cmd /c c:\odt\setup.exe /configure "c:\odt\365enterprise.xml"
+Remove-Item c:\ODT -recurse -force
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Don't install office via winget. 32-bit is currently unsupported via winget, and the 64-bit version which is preinstalled on HP machines needs to be uninstalled before the 32-bit can be installed.
 # A work around is to run a preconfigured installer from the USB.
 # Put the files from ITGlue (https://tca.au.itglue.com/2448273808656493/documents/folder/3303640252483645/) into the same directory as your agent on your USB.
-# Run the following command to uninstall the pre-installed 64-bit version of office.
-setup.exe /configure "uninstall.xml"
-# Run one of the following commands, depending on which version of office the client uses.
-#setup.exe /configure "365business.xml"
-#setup.exe /configure "365enterprise.xml"
+# Run the following command to uninstall the pre-installed 64-bit version of office and install the 32-bit vesion of 365 business
+# Note that not all clients use 365 business, and for clients which use 365 enterprise you will need to use the 365enterprise config
+Move-Item –Path $appspath\setup.exe -Destination c:\ODT; Move-Item –Path $appspath\uninstall.xml -Destination c:\ODT; Move-Item –Path $appspath\365business.xml -Destination c:\ODT
+cmd /c c:\odt\setup.exe /configure "uninstall.xml"
+cmd /c c:\odt\setup.exe setup.exe /configure "365business.xml"
+
 
 # Possible chocolatey HP Support assistant install command. Automatically updates to the latest version.
 winget install chocolatey
@@ -110,6 +130,7 @@ $application.uninstall()
 #To view installed applications
 #get-wmiobject -class win32_product
 #This command could be used to uninstall any remaining HP bloatware after the bloatware removal portion of the script has been run.
+
 
 # To remove the edge search bar in the desktop, view the following regedit below
 # Open Registry Editor (start-run-regedit)
