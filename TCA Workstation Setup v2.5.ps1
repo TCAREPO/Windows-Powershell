@@ -84,9 +84,10 @@ get-softpaqlist -friendlyname -catagory driver -downloaddirectory c:\softpaqs -d
 
 
 ### Install HP drivers from download directory
-#cmd /c [driver directory]\[drivername].exe /s
-#???????
-#???????
+#set-location c:\softpaqs
+#Start [driver name] -argument /quiet
+# Need to write command which will automatically obtain all driver names from the folder
+
 
 ### Delete the driver installers after installation is complete
 Remove-Item c:\softpaqs -recurse -force
