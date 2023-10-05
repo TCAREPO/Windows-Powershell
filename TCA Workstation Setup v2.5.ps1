@@ -1,32 +1,11 @@
-# Update Windows 10 to latest Feature 1909
-#$dir = 'C:\_Windows_FU\packages'
-#mkdir $dir
-#$webClient = New-Object System.Net.WebClient
-#$url = 'https://go.microsoft.com/fwlink/?LinkID=799445'
-#$file = "$($dir)\Win10Upgrade.exe"
-#$webClient.DownloadFile($url,$file)
-#Start-Process -FilePath $file -ArgumentList '/quietinstall /skipeula /auto upgrade /copylogs $dir'
-
-# Run windows 10 Updates installed Powershell Module
-#Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Force
-#Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
-#Install-Module -Name PSWindowsUpdate -Force -Scope AllUsers
-#Get-WindowsUpdate -install -AcceptAll
-
-
-#Install Windows 11 from 10, silently.
-#$dir = 'C:\_Windows_FU\packages'
-#mkdir $dir
-#$webClient = New-Object System.Net.WebClient
-#$url = 'https://go.microsoft.com/fwlink/?linkid=2171764'
-#$file = "$($dir)\Win11Upgrade.exe"
-#$webClient.DownloadFile($url,$file)
-#Start-Process -FilePath $file -ArgumentList '/quietinstall /skipeula /auto upgrade /copylogs $dir'
-# this often fails, but in future most of the machines we run up will come with Windows 11 Pre-installed.
-
-
-
 ### Rename Machine
+# Find command which brings up a pop up to rename the machine.
+# May be able to rename machine during OOBE for windows 11
+
+
+### Install Agent
+#redirect to correct directory
+start KcsSetup.exe
 
 
 ### Update Windows
@@ -65,10 +44,6 @@ powercfg -change -standby-timeout-dc 0
 powercfg -change -monitor-timeout-dc 0
 
 
-### Install Agent
-start KcsSetup.exe
-
-
 ### Install Winget package
 Add-AppxPackage https://github.com/microsoft/winget-cli/releases/latest/download/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
 
@@ -88,6 +63,35 @@ cmd /c c:\odt\setup.exe /configure "C:\odt\365uninstall.xml"
 cmd /c c:\odt\setup.exe /configure "c:\odt\365business.xml"
 # cmd /c c:\odt\setup.exe /configure "c:\odt\365enterprise.xml"
 Remove-Item c:\ODT -recurse -force
+
+
+### Install HPCMSL poowershell module
+Install-PackageProvider -Name NuGet -Force #make sure Package NuGet is up to date 
+Install-Module -Name PowerShellGet  -Force #install the latest version of PowerSHellGet module
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Bypass -Force;
+import-module powershellget
+set-psrepository -name "psgallery" -installationpolicy trusted 
+Install-Module -Name HPCMSL -acceptlicense
+
+
+### Download and install latest HP Bios
+get-hpbioswindowsupdate -severity latest -flash -yes
+
+
+### Download HP drivers
+get-softpaqlist -friendlyname -catagory driver, bios -downloaddirectory c:\softpaqs -download
+
+
+### Install HP drivers from download directory
+#???????
+#???????
+#???????
+
+### Delete the driver installers after installation is complete
+Remove-Item c:\softpaqs -recurse -force
+
+
+
 
 
 
@@ -302,3 +306,48 @@ Catch {
 #           n{exit}
 #     default{write-warning "Skipping reboot."}
 # }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#### Redundancies ####
+# Update Windows 10 to latest Feature 1909
+#$dir = 'C:\_Windows_FU\packages'
+#mkdir $dir
+#$webClient = New-Object System.Net.WebClient
+#$url = 'https://go.microsoft.com/fwlink/?LinkID=799445'
+#$file = "$($dir)\Win10Upgrade.exe"
+#$webClient.DownloadFile($url,$file)
+#Start-Process -FilePath $file -ArgumentList '/quietinstall /skipeula /auto upgrade /copylogs $dir'
+
+# Run windows 10 Updates installed Powershell Module
+#Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Force
+#Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
+#Install-Module -Name PSWindowsUpdate -Force -Scope AllUsers
+#Get-WindowsUpdate -install -AcceptAll
+
+
+#Install Windows 11 from 10, silently.
+#$dir = 'C:\_Windows_FU\packages'
+#mkdir $dir
+#$webClient = New-Object System.Net.WebClient
+#$url = 'https://go.microsoft.com/fwlink/?linkid=2171764'
+#$file = "$($dir)\Win11Upgrade.exe"
+#$webClient.DownloadFile($url,$file)
+#Start-Process -FilePath $file -ArgumentList '/quietinstall /skipeula /auto upgrade /copylogs $dir'
+# this often fails, but in future most of the machines we run up will come with Windows 11 Pre-installed.
