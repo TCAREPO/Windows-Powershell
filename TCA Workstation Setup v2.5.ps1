@@ -1,6 +1,6 @@
 ### Rename Machine
 # TBD: Find command which brings up a pop up to rename the machine.
-# May be able to rename machine during OOBE for windows 11
+# Can sometimes be able to rename machine during OOBE for windows 11
 
 
 ### Install Agent
@@ -80,11 +80,11 @@ get-hpbioswindowsupdate -severity latest -flash -yes
 
 
 ### Download HP drivers
-get-softpaqlist -friendlyname -catagory driver, bios -downloaddirectory c:\softpaqs -download
+get-softpaqlist -friendlyname -catagory driver -downloaddirectory c:\softpaqs -download
 
 
 ### Install HP drivers from download directory
-#???????
+#cmd /c [driver directory]\[drivername].exe /s
 #???????
 #???????
 
