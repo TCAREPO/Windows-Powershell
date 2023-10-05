@@ -13,7 +13,7 @@ Install-Module -name PSWindowsupdate
 Get-WindowsUpdate
 Install-WindowsUpdate -acceptall -IgnoreReboot
 # TBD: Find command which enables auto updates
-
+# Script misses some updates.
 
 ### Join computer to domain (Restart) examples
 #Add-Computer -DomainName paperboys.local -Credential paperboys\tcaadmin -Force -Restart
