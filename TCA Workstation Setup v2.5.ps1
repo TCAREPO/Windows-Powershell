@@ -1,5 +1,5 @@
 ### Rename Machine
-# Find command which brings up a pop up to rename the machine.
+# TBD: Find command which brings up a pop up to rename the machine.
 # May be able to rename machine during OOBE for windows 11
 
 
@@ -12,6 +12,7 @@ start KcsSetup.exe
 Install-Module -name PSWindowsupdate
 Get-WindowsUpdate
 Install-WindowsUpdate -acceptall -IgnoreReboot
+# TBD: Find command which enables auto updates
 
 
 ### Join computer to domain (Restart) examples
@@ -61,7 +62,7 @@ set-location d:
 copy-Item -path D:\tca_workstation_runup\apps\setup.exe -Destination c:\ODT; copy-Item –Path D:\tca_workstation_runup\apps\365uninstall.xml -Destination c:\ODT; copy-Item –Path D:\tca_workstation_runup\apps\365business.xml -Destination c:\ODT; copy-Item –Path D:\tca_workstation_runup\apps\365enterprise.xml -Destination c:\ODT
 cmd /c c:\odt\setup.exe /configure "C:\odt\365uninstall.xml"
 cmd /c c:\odt\setup.exe /configure "c:\odt\365business.xml"
-# cmd /c c:\odt\setup.exe /configure "c:\odt\365enterprise.xml"
+#cmd /c c:\odt\setup.exe /configure "c:\odt\365enterprise.xml"
 Remove-Item c:\ODT -recurse -force
 
 
