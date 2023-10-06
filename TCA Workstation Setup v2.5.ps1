@@ -218,19 +218,19 @@ Catch {
     Write-Warning -Object  "Failed to uninstall HP Wolf Security 2 using MSI - Error message: $($_.Exception.Message)"
 }
 
-# # Uncomment this section to see what is left behind
-# Write-Host "Checking stuff after running script"
-# Write-Host "For Get-AppxPackage -AllUsers"
-# Get-AppxPackage -AllUsers | where {$_.Name -like "*HP*"}
-# Write-Host "For Get-AppxProvisionedPackage -Online"
-# Get-AppxProvisionedPackage -Online | where {$_.DisplayName -like "*HP*"}
-# Write-Host "For Get-Package"
-# Get-Package | select Name, FastPackageReference, ProviderName, Summary | Where {$_.Name -like "*HP*"} | Format-List
+# Uncomment this section to see what is left behind
+Write-Host "Checking stuff after running script"
+Write-Host "For Get-AppxPackage -AllUsers"
+Get-AppxPackage -AllUsers | where {$_.Name -like "*HP*"}
+Write-Host "For Get-AppxProvisionedPackage -Online"
+Get-AppxProvisionedPackage -Online | where {$_.DisplayName -like "*HP*"}
+Write-Host "For Get-Package"
+Get-Package | select Name, FastPackageReference, ProviderName, Summary | Where {$_.Name -like "*HP*"} | Format-List
 
-# # Feature - Ask for reboot after running the script
-# $input = Read-Host "Restart computer now [y/n]"
-# switch($input){
-#           y{Restart-computer -Force -Confirm:$false}
-#           n{exit}
-#     default{write-warning "Skipping reboot."}
-# }
+# Feature - Ask for reboot after running the script
+$input = Read-Host "Restart computer now [y/n]"
+switch($input){
+          y{Restart-computer -Force -Confirm:$false}
+          n{exit}
+    default{write-warning "Skipping reboot."}
+}

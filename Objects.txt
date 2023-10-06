@@ -1,5 +1,2 @@
-Machine1
-Machine2
-gay
-10
-11
+C:\tca\Github\Windows-Powershell\test.ps1
+Machinename
