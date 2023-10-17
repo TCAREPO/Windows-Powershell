@@ -1,4 +1,4 @@
-### Rename Machine
+### Rename Machine (Rename machine before installing the agent)
 # TBD: Find command which brings up a pop up to rename the machine.
 # Can sometimes be able to rename machine during OOBE for windows 11
 
@@ -8,12 +8,23 @@
 start KcsSetup.exe
 
 
-### Update Windows
+### Update Windows (Installing Winget may fail if Windows Updates are incomplete)
 Install-Module -name PSWindowsupdate
 Get-WindowsUpdate
 Install-WindowsUpdate -acceptall -IgnoreReboot
 # TBD: Find command which enables auto updates
 # Script misses some updates.
+
+
+# Possible Command to upgrade to Windows 11 (May be more reliable than installing it manually?)
+#$dir = 'C:\_Windows_FU\packages'
+#mkdir $dir
+#$webClient = New-Object System.Net.WebClient
+#$url = 'https://go.microsoft.com/fwlink/?linkid=2171764'
+#$file = "$($dir)\Win11Upgrade.exe"
+#$webClient.DownloadFile($url,$file)
+#Start-Process -FilePath $file -ArgumentList '/quietinstall /skipeula /auto upgrade /copylogs $dir'
+
 
 ### Join computer to domain (Restart) examples
 #Add-Computer -DomainName paperboys.local -Credential paperboys\tcaadmin -Force -Restart
