@@ -90,7 +90,7 @@ Install-Module -Name HPCMSL -acceptlicense
 get-hpbioswindowsupdate -severity latest -flash -yes
 
 
-### Download HP drivers
+### Download HP drivers (several redundant drivers will also be downloaded)
 get-softpaqlist -friendlyname -catagory driver -downloaddirectory c:\softpaqs -download
 
 
