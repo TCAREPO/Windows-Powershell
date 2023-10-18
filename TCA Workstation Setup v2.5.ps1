@@ -8,7 +8,7 @@
 start KcsSetup.exe
 
 
-### Update Windows (Installing Winget may fail if Windows Updates are incomplete)
+### Update Windows (Winget installation may fail if Windows Updates are incomplete)
 Install-Module -name PSWindowsupdate -Force -Scope AllUsers
 Get-WindowsUpdate
 Install-WindowsUpdate -acceptall -IgnoreReboot
