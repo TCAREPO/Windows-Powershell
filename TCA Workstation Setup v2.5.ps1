@@ -118,12 +118,14 @@ Remove-Item c:\softpaqs -recurse -force
 
 ### TBD:
 # set default apps (all users)
-# pin icons to taskbar (all users)
+# pin shortcuts and tca tray icon to taskbar (all users)
 # change taskbar settings (all users)
 # set password
 
-# rename machine 
+# rename machine
+# Install VPN
 # domain join
+# connect printers
 
 
 
