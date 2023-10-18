@@ -68,6 +68,15 @@ winget install -e --id VideoLAN.VLC --accept-source-agreements --silent
 winget install --id TeamViewer.TeamViewer --accept-source-agreements --silent
 
 
+### Remove desktop shortcuts
+Remove-Item C:\users\public\desktop\teamviewer.lnk
+Remove-Item C:\users\public\desktop\"Adobe Acrobat.lnk"
+Remove-Item C:\users\public\desktop\"TCO Certified.lnk"
+Remove-Item C:\users\public\desktop\"Microsoft Edge.lnk"
+Remove-Item C:\users\public\desktop\"VLC Media player.lnk"
+Remove-Item C:\users\public\desktop\"HP Support Assistant.lnk"
+
+
 ### Reinstall Office 365 (Business by default, but can easily change to Enterprise via the commands below)
 set-location d:
 copy-Item -path D:\tca_workstation_runup\apps\setup.exe -Destination c:\ODT; copy-Item –Path D:\tca_workstation_runup\apps\365uninstall.xml -Destination c:\ODT; copy-Item –Path D:\tca_workstation_runup\apps\365business.xml -Destination c:\ODT; copy-Item –Path D:\tca_workstation_runup\apps\365enterprise.xml -Destination c:\ODT
