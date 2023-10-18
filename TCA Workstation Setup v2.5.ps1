@@ -117,10 +117,9 @@ Remove-Item c:\softpaqs -recurse -force
 
 
 ### TBD:
-# delete desktop shortcuts (per user)
-# set default apps (per user)
-# pin icons to taskbar (per user)
-# change taskbar settings (per user)
+# set default apps (all users)
+# pin icons to taskbar (all users)
+# change taskbar settings (all users)
 # set password
 
 # rename machine 
