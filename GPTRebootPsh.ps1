@@ -5,7 +5,7 @@ Param (
     [switch]
     $Boot
 )
-$ScriptPath = 'C:\tca\GPTRebootPsh.ps1'
+$ScriptPath = 'C:\tca\Github\Windows-Powershell\GPTRebootPsh.ps1'
 $ScriptRestarter = 'C:\tca\ScriptRestarter.ps1'
 if ($Boot) {
     Write-Output('Running task')

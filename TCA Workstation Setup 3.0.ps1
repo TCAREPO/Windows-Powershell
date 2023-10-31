@@ -1,10 +1,9 @@
 # This script will take the source code from 2.5 and build an interactive "flow-based" simple command line interface.
-# IMPORTANT: RUN-UP USB MUST BE THE ONLY EXTERNAL DRIVE CONNECTED!
 
-# Each time the script restarts it supplies the corresponding 'Stage' parameter
+# Each time the script restarts it supplies the corresponding 'Stage' parameter when script is called via scheduled-task
 # to ensure that it restarts at the correct point in the script.
 
-# Technician MUST create the first user with the username "User".
+# Technician MUST create the first user via OOBE with the username "user".
 
 [CmdletBinding()]
 param (
@@ -17,7 +16,7 @@ param (
 )
 
 # Objects - Storing system info in .txt and objects
-
+$UserName = 'user'
 $ScriptFile = $MyInvocation.MyCommand.Path
 $AppsPath = "$PSScriptRoot\Applications"
 $MachineName = Read-Host 'Enter machine name, excluding the Kaseya group'
@@ -51,26 +50,26 @@ if($Start){
     powercfg -change -monitor-timeout-dc 0
 
     # Create scheduled task to continue script after restart
-    $UserName = "user"
     $Action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "$ScriptFile -Stage2"
     $Trigger = New-ScheduledTaskTrigger -AtLogOn -User $UserName
-    $Settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries # Allows task to Trigger if on battey power
-
+    $Settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries
     Register-ScheduledTask -Action $Action -Trigger $Trigger -TaskName "OpenScriptAtLogon" -User $UserName -Settings $Settings
 
     # Restart computer
     Write-Output "Machine will restart and continue run-up process"
+    
+    # Automatic logon on restart: Modify registry keys then restart
+    New-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'AutoAdminLogon' -Value '1' -PropertyType String
+    New-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'targetUserName' -Value "$user" -PropertyType String
+    New-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'targetUserPassword' -Value "$user" -PropertyType String
+    New-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'AutoLogonCount' -Value '1' -PropertyType DWord
     Start-Sleep -Seconds 5
     Restart-Computer
-
 }
 
 #Install applications
-
 if($Stage2){
- 
-    # Improved version (work in progress)
-
+    # Improved version of default apps
     Add-AppxPackage https://github.com/microsoft/winget-cli/releases/latest/download/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
     winget install -e --id Google.Chrome --silent --accept-source-agreements
     winget install --id Adobe.Acrobat.Reader.64-bit --exact --accept-source-agreements --accept-package-agreements --silent
