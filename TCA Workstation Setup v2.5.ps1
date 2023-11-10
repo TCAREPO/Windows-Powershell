@@ -127,6 +127,19 @@ Remove-Item c:\softpaqs -recurse -force
 # domain join
 # connect printers
 
+#When using supported microsoft mice, you can create macros to automate clicking on pop ups and making changes which can't be done through a powershell command. To create/run these macros you need to install microsoft mouse and keyboard center (winget installer below)
+#winget install -e --id microsoft.mouseandkeyboardcenter
+#Removing application pop ups will only be applied on the user which is currently logged in.
+
+#possible winget install stuck fix
+#winget source update
+#other solution:
+#net stop wuauserv
+# delete c:/windows/softwaredistribution
+#net start wuauserv
+
+
+
 
 
 
