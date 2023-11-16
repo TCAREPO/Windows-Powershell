@@ -3,7 +3,7 @@
 # Each time the script restarts it supplies the corresponding 'Stage' parameter when script is called via scheduled-task
 # to ensure that it restarts at the correct point in the script.
 
-# Technician MUST create the first user via OOBE with the username "user".
+# Technician MUST create the first user via OOBE with the username "tcaadmin".
 
 # D:\Run-up\TCA_Workstation_Setup_3.0.ps1 -start
 
