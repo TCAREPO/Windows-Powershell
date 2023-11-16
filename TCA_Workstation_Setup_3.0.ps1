@@ -5,6 +5,8 @@
 
 # Technician MUST create the first user via OOBE with the username "user".
 
+# D:\Run-up\TCA_Workstation_Setup_3.0.ps1 -start
+
 [CmdletBinding()]
 param (
     [Parameter()]
@@ -15,13 +17,20 @@ param (
     $Stage2
 )
 
-# Objects - Storing system info in .txt and objects
-$UserName = 'user'
-$ScriptFile = $MyInvocation.MyCommand.Path
 
+# Objects - Storing system info in .txt and objects
+$User = 'user'
+$ScriptFile = $MyInvocation.MyCommand.Path
 
 # Beginning of run-up process
 if($Start){
+
+    # Install dependency modules
+    #Set-PSRepository -Name 'PSGallery' -Confirm:$False
+    Install-PackageProvider -Name Nuget -Force
+    Install-Module PSWindowsUpdate -Force
+
+    # Read start input
     $MachineName = Read-Host 'Enter machine name, excluding the Kaseya group'
     $WindowsVersion = Read-Host 'Enter windows version (write "10" or "11" ONLY)' | Out-File "$PSScriptRoot\Objects.txt"
     Read-Host 'Enter Office 365 edition for installation (Business = 1, Enterprise = 2)' | Out-File "$PSScriptRoot\Objects.txt" -Append
@@ -47,37 +56,62 @@ if($Start){
     # Turn off screen saver and Lock screen (Power and Sleep, screen turn off never)
     powercfg -change -monitor-timeout-ac 0
     powercfg -change -standby-timeout-ac 0
-    powercfg -change -standby-timeout-d c 0
+    powercfg -change -standby-timeout-dc 0
     powercfg -change -monitor-timeout-dc 0
 
     # Create scheduled task to continue script after restart
     $Action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "$ScriptFile -Stage2"
-    $Trigger = New-ScheduledTaskTrigger -AtLogOn -User $UserName
+    $Trigger = New-ScheduledTaskTrigger -AtLogOn -User $User
     $Settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries
-    Register-ScheduledTask -Action $Action -Trigger $Trigger -TaskName 'OpenScriptAtLogon' -User $UserName -Settings $Settings -RunLevel Highest
+    Register-ScheduledTask -Action $Action -Trigger $Trigger -TaskName 'OpenScriptAtLogon' -User $User -Settings $Settings -RunLevel Highest
+    
+    # Check registry keys are not present before modifying them to enable autologon
+    $RegKeyAutoAdminLogon = Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'AutoAdminLogon'
+    $RegKeyDefaultUsername = Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'DefaultUsername'
+    $RegKeyDefaultPassword = Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'DefaultPassword'
+    $RegKeyAutoLogonCount = Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'AutoLogonCount'
+    
+    if ($RegKeyAutoAdminLogon -ne $Null){
+        Remove-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'AutoAdminLogon'
+    }
+    New-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'AutoAdminLogon' -Value '1' -PropertyType String
+        
+    if ($RegKeyDefaultUsername -ne $Null){
+        Remove-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'DefaultUsername'
+    }
+    New-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'DefaultUsername' -Value "$User" -PropertyType String
+    
+    if ($RegKeyDefaultPassword -ne $Null){
+        Remove-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'DefaultPassword'
+    }
+    New-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'DefaultPassword' -Value "$User" -PropertyType String
+    
+    if ($RegKeyAutoLogonCount -ne $Null){
+        Remove-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'DefaultPassword'
+    }
+    New-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'AutoLogonCount' -Value '99' -PropertyType DWord
+    
+    
+    Start-Sleep -Seconds 5
+    
+    # Run windows updates then restart
 
-    # Restart computer
+    Get-WindowsUpdate -AcceptAll
+    Restart-Computer
     Write-Output 'Machine will restart and continue run-up process'
     
-    # Automatic logon on restart: Modify registry keys then restart
-    New-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'AutoAdminLogon' -Value '1' -PropertyType String
-    New-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'DefaultUsername' -Value "$user" -PropertyType String
-    New-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'DefaultPassword' -Value "$user" -PropertyType String
-    New-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'AutoLogonCount' -Value '1' -PropertyType DWord
-    Start-Sleep -Seconds 5
-    Restart-Computer
 }
 
 #Install applications
 if($Stage2){
     
-    # Reset/remove autologon registry keys
+    # Reset/remove autologon registry keys Remove-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'AutoAdminLogon'
     Remove-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'AutoAdminLogon'
     Remove-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'DefaultUsername'
     Remove-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'DefaultPassword'
     Remove-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'AutoLogonCount'
     Unregister-ScheduledTask -TaskName 'OpenScriptAtLogon' -Confirm:$false
-
+    
     # Improved version of default apps
     Add-AppxPackage https://github.com/microsoft/winget-cli/releases/latest/download/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
     winget install -e --id Google.Chrome --silent --accept-source-agreements
@@ -85,20 +119,38 @@ if($Stage2){
     winget install -e --id 7zip.7zip --accept-source-agreements --silent
     winget install -e --id VideoLAN.VLC --accept-source-agreements --silent
     winget install -e --id TeamViewer.TeamViewer --accept-source-agreements --silent
-    Start-Process KcsSetup.exe
+    Start-Process $PSScriptRoot\KcsSetup.exe
+      
+    # Remove shortcuts from desktop
+    Remove-Item C:\users\public\desktop\teamviewer.lnk
+    Remove-Item C:\users\public\desktop\'Adobe Acrobat.lnk'
+    Remove-Item C:\users\public\desktop\'TCO Certified.lnk'
+    Remove-Item C:\users\public\desktop\'Microsoft Edge.lnk'
+    Remove-Item C:\users\public\desktop\'VLC Media player.lnk'
+    Remove-Item C:\users\public\desktop\'HP Support Assistant.lnk'
 
     # Microsoft 365 installation/uninstall default version
-        $OfficeConfig = (Get-Content -Path C:\tca\ODT_Test\Objects.txt)[1]
-        Start-process "$PSScriptRoot\setup.exe" -Verb RunAs -ArgumentList "/configure $PSScriptRoot\Uninstall.xml"
-    if ($OfficeConfig -eq '1'){
+    Start-process "$PSScriptRoot\setup.exe" -Verb RunAs -ArgumentList "/configure $PSScriptRoot\Uninstall.xml"
+    Start-Sleep -Seconds 10
+    Wait-Process -Name 'conhost' -Timeout 60
+
+    # Install 365 Enterprise 32bit version based on technician selection (Business or Enterprise version)
+    $OfficeConfig = (Get-Content -Path $PSScriptRoot\Objects.txt)[1]
+
+    if ($OfficeConfig -eq "1"){
         Start-process "$PSScriptRoot\setup.exe" -Verb RunAs -ArgumentList "/configure $PSScriptRoot\Business.xml"
-        }
-    if ($OfficeConfig -eq '2'){
+    }
+    if ($OfficeConfig -eq "2"){
         Start-process "$PSScriptRoot\setup.exe" -Verb RunAs -ArgumentList "/configure $PSScriptRoot\Enterprise.xml"
-        }
-    if ($OfficeConfig -ne '1 , 2') {
-        Write-Output 'Invalid value for 365 apps version'
-        }
+    }
+    if (($OfficeConfig -ne 1) -and ($OfficeConfig -ne 2)) {
+      #  $Input | Out-file -FilePath ($PSScriptRoot\Objects.txt)[1]       # Work in progress
+      Write-Output 'Incorrect input for office apps version'
+    }
+    
+    Wait-Process -Name 'setup' -Timeout 360    
+        
+# Remove HP bloatware
 
     # List of built-in apps to remove
     $UninstallPackages = @(
@@ -210,13 +262,14 @@ if($Stage2){
     Get-Package | select Name, FastPackageReference, ProviderName, Summary | Where {$_.Name -like "*HP*"} | Format-List
 
     # Feature - Ask for reboot after running the script
-    $input = Read-Host "Restart computer now [y/n]"
-    switch($input){
-            y{Restart-computer -Force -Confirm:$false}
-            n{exit}
-        default{write-warning "Skipping reboot."}
-    }
-}
+    #$input = Read-Host "Restart computer now [y/n]"
+    #switch($input){
+    #        y{Restart-computer -Force -Confirm:$false}
+    #        n{exit}
+    #    default{write-warning "Skipping reboot."}
+    #}
 
+
+}
 
 
