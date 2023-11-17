@@ -89,6 +89,7 @@ Remove-Item c:\ODT -recurse -force
 ### Install HPCMSL poowershell module
 Install-PackageProvider -Name NuGet -Force #make sure Package NuGet is up to date 
 Install-Module -Name PowerShellGet  -Force #install the latest version of PowerSHellGet module
+#Powershell may need to be restarted after install the PowerShellGet Module
 Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Bypass -Force;
 import-module powershellget
 set-psrepository -name "psgallery" -installationpolicy trusted 
@@ -100,17 +101,18 @@ get-hpbioswindowsupdate -severity latest -flash -yes
 
 
 ### Download HP drivers (several redundant drivers will also be downloaded)
-get-softpaqlist -friendlyname -catagory driver -downloaddirectory c:\softpaqs -download
+get-softpaqlist -friendlyname -category driver -characteristic SSM -downloaddirectory c:\HPD -download
+#"-category driver" only selects for drivers. Missing the category parameter will download everything, including bloatware
+#"-characteristic ssm" only selects files which can be install silently, which is most drivers
 
 
-### Install HP drivers from download directory
-#set-location c:\softpaqs
-#Start [driver name] -argument /quiet
-# Need to write command which will automatically obtain all driver names from the folder
+### Quiet Install HP drivers downloaded on local directory
+Get-ChildItem -Path C:\HPD | Where-Object {$_.Extension -like ".exe"}| Foreach {Start-Process $_.FullName --quiet}
+#Need to check installs will complete before moving onto next command
 
 
 ### Delete the driver installers after installation is complete
-Remove-Item c:\softpaqs -recurse -force
+Remove-Item c:\HPD -recurse -force
 
 
 
