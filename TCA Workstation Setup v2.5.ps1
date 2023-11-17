@@ -141,6 +141,7 @@ Remove-Item c:\HPD -recurse -force
 # delete c:/windows/softwaredistribution
 #net start wuauserv
 
+# Set script to automatically download/install client-specific apps based upon machine name/domain.
 
 
 
