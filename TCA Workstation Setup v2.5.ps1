@@ -108,7 +108,8 @@ get-softpaqlist -friendlyname -category driver -characteristic SSM -downloaddire
 
 ### Quiet Install HP drivers downloaded on local directory
 Get-ChildItem -Path C:\HPD | Where-Object {$_.Extension -like ".exe"}| Foreach {Start-Process $_.FullName --quiet}
-#Need to check installs will complete before moving onto next command
+#TBD: generate log file to view installation status
+#TBD: Verify that installs are completed before powershell continues the next command (which deletes the installers)
 
 
 ### Delete the driver installers after installation is complete
