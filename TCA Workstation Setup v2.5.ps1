@@ -101,7 +101,7 @@ get-hpbioswindowsupdate -severity latest -flash -yes
 
 
 ### Download HP drivers (several redundant drivers will also be downloaded)
-get-softpaqlist -friendlyname -category driver -characteristic SSM -downloaddirectory c:\HPD -download
+get-softpaqlist -friendlyname -category driver -characteristic SSM -downloaddirectory c:\HPD -download -quiet
 #"-category driver" only selects for drivers. Missing the category parameter will download everything, including bloatware
 #"-characteristic ssm" only selects files which can be install silently, which is most drivers
 
