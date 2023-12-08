@@ -97,7 +97,7 @@ if($Start){
     # Run windows updates then restart
 
     Get-WindowsUpdate -AcceptAll 
-    Install-WindowsUpdate -MicrosoftUpdate -verbose -AcceptAll -Install | Out-File "c:\tcaadmin\logs\pswu\$(get-date -f yyyy-MM-dd)-WindowsUpdate.log" -force
+    Install-WindowsUpdate -MicrosoftUpdate -verbose -AcceptAll -Install | Out-File "c:\tcaadmin\logs\pswu\$(get-date -f yyyy-MM-dd)-WindowsUpdate.log"
     Restart-Computer
     Write-Output 'Machine will restart and continue run-up process'
     
