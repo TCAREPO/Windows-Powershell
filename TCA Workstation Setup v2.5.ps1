@@ -50,10 +50,10 @@ powercfg /query
 
 
 ### Turn off screen saver and Lock screen (Power and Sleep, screen turn off never)
-powercfg -change -monitor-timeout-ac 0
-powercfg -change -standby-timeout-ac 0
-powercfg -change -standby-timeout-dc 0
-powercfg -change -monitor-timeout-dc 0
+powercfg -change -monitor-timeout-ac 60
+powercfg -change -standby-timeout-ac 60
+powercfg -change -standby-timeout-dc 60
+powercfg -change -monitor-timeout-dc 60
 
 
 ### Install Winget package
